@@ -1,0 +1,48 @@
+{% extends 'base/main.html' %}
+
+{% block content %}
+<div style="max-width: 800px; margin: auto; padding: 20px; background: white; border-radius: 8px;">
+    {% if request.user.is_authenticated %}
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <p>Welcome, {{ request.user.username }}!</p>
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" style="padding: 8px 16px; background-color: #333; color: white; border: none; cursor: pointer;">Logout</button>
+        </form>
+    </div>
+    {% else %}
+    <p style="text-align: right;"><a href="{% url 'login' %}" style="color: #0779e4;">Log In</a></p>
+    {% endif %}
+
+    <h1 style="text-align: center;">My To-Do List</h1>
+    <div style="text-align: center; margin-bottom: 20px;">
+        <a href="{% url 'task-create' %}" style="background-color: #333; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Add Task</a>
+    </div>
+
+    <form action="" method="get" style="text-align: center; margin-bottom: 20px;">
+        <input type="text" name="search-area" value="{{ search_input }}" style="padding: 10px; width: 75%; margin-right: 10px;">
+        <input type="submit" value="Search" style="padding: 10px 20px; background-color: #333; color: white; border: none; cursor: pointer;">
+    </form>
+
+    <table style="width: 100%; border-collapse: collapse;">
+        <tr style="background-color: #f4f4f4;">
+            <th style="padding: 10px; border-bottom: 1px solid #ccc;">Item</th>
+            <th style="padding: 10px; border-bottom: 1px solid #ccc;">Actions</th>
+        </tr>
+        {% for task in tasks %}
+        <tr>
+            <td style="padding: 10px; border-bottom: 1px solid #ccc;">{{ task.title }}</td>
+            <td style="padding: 10px; border-bottom: 1px solid #ccc;">
+                <a href="{% url 'task' task.id %}" style="margin-right: 10px; color: #0779e4;">View</a>
+                <a href="{% url 'task-update' task.id %}" style="margin-right: 10px; color: orange;">Edit</a>
+                <a href="{% url 'task-delete' task.id %}" style="color: red;">Delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="2" style="text-align: center; padding: 10px;">No Items in List</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock content %}
